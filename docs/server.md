@@ -161,7 +161,7 @@ sudo systemctl restart gpsd
 ```
 watch chronyc sources -v
 ```
-稍等個幾分鐘後chrony就會自己切成與PPS同步
+稍等個幾分鐘後chrony就會自己切成與PPS同步 如果沒有的話就重開機 重開機治百病
 ```
 Every 2.0s: chronyc sources -v                                                                    raspberrypi: Mon Sep  9 14:06:18 2024
 
@@ -186,5 +186,45 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
 ```
 - 安裝PTP Server
 
+```
+sudo apt install linuxptp -y
+```
 
-
+編輯/etc/linuxptp/ptp4l.conf
+```
+sudo nano /etc/linuxptp/ptp4l.conf
+```
+將對應的欄位修改成
+```
+priority1               127
+masterOnly              1
+```
+啟動PTP服務
+```
+systemctl enable ptp4l@eth0
+systemctl start ptp4l@eth0
+```
+建立系統服務
+```
+cd /lib/systemd/system
+sudo cp phc2sys\@.service sys2phc-eth0.service
+```
+編輯sys2phc-eth0.service
+```
+sudo nano sys2phc-eth0.service
+```
+將對應的欄位修改成
+```
+Requires=ptp4l@eth0.service
+After=ptp4l@eth0.service
+```
+啟動phc2sys (這個步驟好像需要他一直在背景執行 所以我把他丟到背景去了)
+```
+sudo  nohup phc2sys -w -c eth0 -s CLOCK_REALTIME >/dev/null 2>&1 &
+```
+啟動服務
+```
+systemctl daemon-reload
+systemctl enable sys2phc-eth0
+systemctl start sys2phc-eth0
+```
