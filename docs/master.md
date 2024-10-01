@@ -1,12 +1,12 @@
-# 伺服端
+# 主時鐘端
 ## 需求
 - 本文以Pi5實作
 - OS RaspberryPi OS Lite
 - GPS NEO-M8N + GPS天線 SMA介面有源天線 
 
-## 安裝步驟
+# 安裝步驟
 
-- 腳位對接
+## 腳位對接及設定
 
 | 樹梅派腳位       | GPS腳位 |
 | ---------------- | ------- |
@@ -15,9 +15,9 @@
 | GPIO15(UART_RXD) | TX      |
 | GND              | GND     |
 | 5V               | VCC     |
-
-- 啟用UART0
-- 設定 GPIO18 為 PPS 腳位
+---
+### 啟用UART0
+### 設定 GPIO18 為 PPS 腳位
 
 
 ```
@@ -36,7 +36,7 @@ sudo reboot
 ```
 sudo cat /dev/ttyAMA0
 ```
-如果有出現
+如果有出現下面之類的訊息代表成功
 ```
 $GNVTG,,T,,M,0.162,N,0.300,K,D*3E
 
@@ -57,7 +57,7 @@ $GLGSV,3,1,09,65,18,309,,71,19,065,35,72,39,013,,73,15,036,*6D
 $GLGSV,3,2,09,74,45,073,25,75,38,152,40,86,14,193,,87,38,241,*64
 
 ```
-之類的訊息代表成功
+
 
 - 安裝PPS-tools
 
@@ -77,7 +77,7 @@ source 0 - assert 1725859409.005826316, sequence: 100 - clear  0.000000000, sequ
 ```
 代表安裝成功
 
-- 安裝 GPSd
+## 安裝 GPSd
 
 ```
 sudo apt install gpsd gpsd-clients -y
@@ -129,7 +129,7 @@ x Time offset:            2.008669352 s     xxSB129   42  54.0  141.0   0.0  N x
 x Grid Square:            PL04qx06          xxSB137   50  60.0  167.0  37.0  N x
 ```
 
-- 安裝Chrony
+## 安裝Chrony
 
 安裝Chrony可以讓伺服器自動校時
 ```
@@ -184,7 +184,7 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
 ^+ t2.time.tw1.yahoo.com         2   6    77    43   +181us[+1301us] +/- 6125us
 
 ```
-- 安裝PTP Server
+## 安裝PTP Server
 
 ```
 sudo apt install linuxptp -y
